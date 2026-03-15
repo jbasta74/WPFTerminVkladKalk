@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Windows;
@@ -60,7 +59,7 @@ namespace WPFTerminVkladKalk
         // metoda pro export historie do textového souboru s přehledným formátováním
         private void ExportDoTxt()
         {
-            if (!historie.Any())
+            if (historie.Count == 0)
             {
                 MessageBox.Show("Historie je prázdná, není co exportovat.");
                 return;
@@ -130,6 +129,23 @@ namespace WPFTerminVkladKalk
                 historie = JsonSerializer.Deserialize<List<VypocetData>>(json) ?? new List<VypocetData>();
                 dgHistorie.ItemsSource = historie;
             }
+        }
+        // Zavření aplikace z menu
+        private void MenuUkoncit_Click(object sender, RoutedEventArgs e) => Application.Current.Shutdown();
+
+        // Dialog O aplikaci
+        private void MenuOApp_Click(object sender, RoutedEventArgs e)
+        {
+            // Načtení verze z vlastností projektu (AssemblyInfo)
+            var verze = Assembly.GetExecutingAssembly().GetName().Version;
+
+            string info = $"WPFTerminVkladKalk\n" +
+                          $"Verze: {verze.Major}.{verze.Minor}.{verze.Build}\n\n" +
+                          $"Autor: Jiří Bašta\n" +
+                          $"Popis: Nástroj pro přesný výpočet úroků s ohledem na srážkovou daň 15 %.\n" +
+                          $"Standard: ACT/360";
+
+            MessageBox.Show(info, "O aplikaci", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

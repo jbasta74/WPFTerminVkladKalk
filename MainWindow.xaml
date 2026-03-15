@@ -5,46 +5,92 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFTerminVkladKalk"
         mc:Ignorable="d"
+        Icon="/Resources/ikonka.ico"
         Title="Kalkulačka vkladů" Height="450" Width="600" MinWidth="600" MinHeight="450">
 
-    <Window.InputBindings>
-        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveTxtCommand}"/>
-    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="Save" Executed="BtnExportTxt_Click" />
+        <CommandBinding Command="Delete" Executed="BtnSmazat_Click" />
+    </Window.CommandBindings>
 
-    <Grid Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+        <Menu Grid.Row="0" Background="White" Padding="2" BorderBrush="LightGray" BorderThickness="0,0,0,1">
+            <MenuItem Header="_Soubor">
+                <MenuItem Header="_Exportovat do TXT" Command="Save" InputGestureText="Ctrl+S">
+                    <MenuItem.Icon>
+                        <TextBlock Text="💾" VerticalAlignment="Center"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="_Ukončit" Click="MenuUkoncit_Click" />
+            </MenuItem>
+            <MenuItem Header="_Úpravy">
+                <MenuItem Header="_Smazat celou historii" Command="Delete" Foreground="Red" />
+            </MenuItem>
+            <MenuItem Header="_Nápověda">
+                <MenuItem Header="_O aplikaci" Click="MenuOApp_Click" />
+            </MenuItem>
+        </Menu>
 
-            <GroupBox Header="Parametry vkladu" Padding="5">
-                <StackPanel>
-                    <Label Content="Vklad (Kč):" FontWeight="Bold"/>
-                    <TextBox x:Name="txtVklad" Text="100000"/>
-                    <Label Content="Úrok p.a. (%):" FontWeight="Bold"/>
-                    <TextBox x:Name="txtUrok" Text="5"/>
-                    <Label Content="Doba (měsíce):" FontWeight="Bold"/>
-                    <TextBox x:Name="txtMesice" Text="12" VerticalContentAlignment="Center"/>
-                    <Button Content="VYPOČÍTAT" Margin="0,15,0,0" Click="BtnVypocitat_Click" Height="35" Background="LightGreen" FontWeight="Bold"/>
-                </StackPanel>
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                <GroupBox Header="Parametry vkladu" Padding="8" Background="#F9F9F9">
+                    <StackPanel>
+                        <Label Content="Vklad (Kč):" FontWeight="Bold"/>
+                        <TextBox x:Name="txtVklad" Text="100000" Margin="0,0,0,5" Padding="3"/>
+
+                        <Label Content="Úrok p.a. (%):" FontWeight="Bold"/>
+                        <TextBox x:Name="txtUrok" Text="5" Margin="0,0,0,5" Padding="3"/>
+
+                        <Label Content="Doba (měsíce):" FontWeight="Bold"/>
+                        <TextBox x:Name="txtMesice" Text="12" Margin="0,0,0,5" Padding="3"/>
+
+                        <Button Content="VYPOČÍTAT" Margin="0,15,0,0" Click="BtnVypocitat_Click" 
+                                Height="40" Background="LightGreen" FontWeight="Bold" Cursor="Hand">
+                            <Button.Effect>
+                                <DropShadowEffect BlurRadius="5" ShadowDepth="1" Opacity="0.2"/>
+                            </Button.Effect>
+                        </Button>
+                    </StackPanel>
+                </GroupBox>
+
+                <TextBlock Text="Tip: Výpočet probíhá dle standardu ACT/360 se srážkovou daní 15 %." 
+                           TextWrapping="Wrap" Margin="5,20,5,0" FontSize="11" Foreground="Gray" FontStyle="Italic"/>
+            </StackPanel>
+
+            <GroupBox Grid.Column="1" Header="Historie výpočtů">
+                <DataGrid x:Name="dgHistorie" AutoGenerateColumns="False" IsReadOnly="True" 
+                          AlternatingRowBackground="#F2F2F2" GridLinesVisibility="None" 
+                          BorderThickness="1" BorderBrush="LightGray">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Zadáno" Binding="{Binding DatumVkladu, StringFormat={}{0:dd.MM. HH:mm}}" Width="Auto"/>
+
+                        <DataGridTextColumn Header="Vklad" Binding="{Binding Vklad, StringFormat={}{0:N0} Kč}" Width="*"/>
+
+                        <DataGridTextColumn Header="Úrok %" Binding="{Binding UrokPa}" Width="Auto"/>
+
+                        <DataGridTextColumn Header="Čistý zisk" Binding="{Binding CistyUrok, StringFormat={}{0:N2} Kč}" FontWeight="Bold" Width="*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="Green"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTextColumn Header="Splatnost" Binding="{Binding DatumSplatnosti, StringFormat={}{0:dd.MM.yyyy}}" Width="Auto"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </GroupBox>
-
-            <Button Content="Exportovat do TXT (Ctrl+S)" Margin="0,20,0,0" Click="BtnExportTxt_Click"/>
-            <Button Content="Smazat celou historii" Margin="0,10,0,0" Click="BtnSmazat_Click" Foreground="Red"/>
-        </StackPanel>
-
-        <DataGrid Grid.Column="1" x:Name="dgHistorie" AutoGenerateColumns="False" IsReadOnly="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Datum" Binding="{Binding Datum, StringFormat={}{0:dd.MM. HH:mm}}"/>
-                <DataGridTextColumn Header="Vklad" Binding="{Binding Vklad, StringFormat={}{0:N0} Kč}"/>
-                <DataGridTextColumn Header="Úrok %" Binding="{Binding UrokPa}"/>
-                <DataGridTextColumn Header="Čistý zisk" Binding="{Binding CistyUrok, StringFormat={}{0:N2} Kč}"/>
-                <DataGridTextColumn Header="Dní (ACT)" Binding="{Binding PocetDni}"/>
-                <DataGridTextColumn Header="Splatnost" Binding="{Binding DatumSplatnosti, StringFormat={}{0:dd.MM.yyyy}}"/>
-
-            </DataGrid.Columns>
-        </DataGrid>
+        </Grid>
     </Grid>
 </Window>
