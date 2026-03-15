@@ -12,19 +12,19 @@ using WPFTerminVkladKalk.Model;
 namespace WPFTerminVkladKalk
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Logika pro hlavní okno aplikace MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
         private const string JsonPath = "data_kalkulacka.json";
         private List<VypocetData> historie = new List<VypocetData>();
-
+        // konstruktor, který načítá data z JSON souboru při startu aplikace
         public MainWindow()
         {
             InitializeComponent();
             NactiJson();
         }
-
+        // metoda pro výpočet úroku a uložení výsledku do historie
         private void BtnVypocitat_Click(object sender, RoutedEventArgs e)
         {
             if (double.TryParse(txtVklad.Text, out double vklad) &&
@@ -55,9 +55,9 @@ namespace WPFTerminVkladKalk
                 ObnovData();
             }
         }
-
+        // metoda pro export historie do txt
         private void BtnExportTxt_Click(object sender, RoutedEventArgs e) => ExportDoTxt();
-
+        // metoda pro export historie do textového souboru s přehledným formátováním
         private void ExportDoTxt()
         {
             if (!historie.Any())
@@ -104,7 +104,7 @@ namespace WPFTerminVkladKalk
                 }
             }
         }
-
+        // smazání uložených dat v pracovním souboru a v historii
         private void BtnSmazat_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Opravdu chcete smazat veškerou historii?", "Potvrzení", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
@@ -114,14 +114,14 @@ namespace WPFTerminVkladKalk
                 ObnovData();
             }
         }
-
+        // aktualizace zobrazení a uložení dat do JSON souboru
         private void ObnovData()
         {
             dgHistorie.ItemsSource = null;
             dgHistorie.ItemsSource = historie;
             File.WriteAllText(JsonPath, JsonSerializer.Serialize(historie));
         }
-
+        // načtení dat z JSON souboru při startu aplikace
         private void NactiJson()
         {
             if (File.Exists(JsonPath))

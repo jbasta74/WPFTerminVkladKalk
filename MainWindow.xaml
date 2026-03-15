@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFTerminVkladKalk"
         mc:Ignorable="d"
-        Title="Kalkulačka vkladů" Height="450" Width="600">
+        Title="Kalkulačka vkladů" Height="450" Width="600" MinWidth="600" MinHeight="450">
 
     <Window.InputBindings>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveTxtCommand}"/>
@@ -18,14 +18,15 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0" Margin="0,0,10,0">
+
             <GroupBox Header="Parametry vkladu" Padding="5">
                 <StackPanel>
-                    <Label Content="Vklad (Kč):"/>
+                    <Label Content="Vklad (Kč):" FontWeight="Bold"/>
                     <TextBox x:Name="txtVklad" Text="100000"/>
-                    <Label Content="Úrok p.a. (%):"/>
+                    <Label Content="Úrok p.a. (%):" FontWeight="Bold"/>
                     <TextBox x:Name="txtUrok" Text="5"/>
-                    <Label Content="Doba (měsíce):"/>
-                    <TextBox x:Name="txtMesice" Text="12"/>
+                    <Label Content="Doba (měsíce):" FontWeight="Bold"/>
+                    <TextBox x:Name="txtMesice" Text="12" VerticalContentAlignment="Center"/>
                     <Button Content="VYPOČÍTAT" Margin="0,15,0,0" Click="BtnVypocitat_Click" Height="35" Background="LightGreen" FontWeight="Bold"/>
                 </StackPanel>
             </GroupBox>

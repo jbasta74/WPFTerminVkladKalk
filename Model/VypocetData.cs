@@ -4,6 +4,7 @@ using System.Text;
 
 namespace WPFTerminVkladKalk.Model
 {
+    // datový model aplikace pro uložení výsledků výpočtu a zobrazení v historii
     public class VypocetData
     {
         public DateTime DatumVkladu { get; set; } = DateTime.Now;
